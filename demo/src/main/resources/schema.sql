@@ -1,0 +1,6 @@
+CREATE TABLE url (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    short_url VARCHAR(128) NOT NULL,
+    long_url VARCHAR(128) NOT NULL,
+    PRIMARY KEY (id)
+);
