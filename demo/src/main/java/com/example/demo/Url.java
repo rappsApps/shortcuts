@@ -37,7 +37,7 @@ public class Url {
         }        return "";
     }
 
-    public String convertLongUrlToTiny(String longUrl){
+    public String convertLongUrlToTiny(String longUrl) {
         String tinyUrlHeader = "www.raysurl.com/";
         int lastDatabaseIndex = 0;
         String urlBody = "";
