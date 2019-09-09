@@ -14,9 +14,9 @@ public class DemoApplication {
 		myUrl.convertLongUrlToTiny(longUrl);
 		SpringApplication.run(DemoApplication.class, args);
 
-		EntityManager em = null;
+		/*EntityManager em = null;
         em.getTransaction().begin();
         em.persist(myUrl);
-        em.getTransaction().commit();
+        em.getTransaction().commit();*/
 	}
 }
