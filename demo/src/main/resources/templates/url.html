@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymelead.org">
+    <head th:th:replace="template :: header"></head>
+    <body>
+        <ul>
+            <li> We said hi to (shortUrl) at (longUrl)</li>
+        </ul>
+        <h1 th:text="'Hello, + $shortUrl + '!'"></h1>
+    </body>
+    <div th:replace="template :: footer"></div>
+</html>
