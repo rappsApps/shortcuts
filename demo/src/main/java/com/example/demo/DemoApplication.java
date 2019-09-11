@@ -16,10 +16,8 @@ import java.util.List;
 public class DemoApplication {
 
     public static void main(String[] args) {
-        //String longUrl = JOptionPane.showInputDialog("Enter a long url");
         SpringApplication.run(DemoApplication.class, args);
         //saveUrl();
-        //String shortUrl = getNextShortUrlAvailable();
 
         System.out.println("Inserting 100 unique web addresses into the DB and 1 duplicate");
         List<String> exampleUrls = new ArrayList<String>();
@@ -28,14 +26,15 @@ public class DemoApplication {
         }
         exampleUrls.add("www.website2.com");
         exampleUrls.forEach(longurl -> {
-            String shortUrl = getNextShortUrlAvailable();
+            String shortUrl = "";
             if (checkUrlIsInDatabase(longurl)) {
+                shortUrl = getShortUrlForLongUrl(longurl);
                 System.out.println("Already in Database. Short url for " + longurl + " is " + shortUrl);
             } else {
                 shortUrl = getNextShortUrlAvailable();
                 addUrlToDatabase(longurl, shortUrl);
                 if (checkUrlIsInDatabase(longurl)) {
-                    System.out.println("After add to database, Short url for " + longurl + " is " + shortUrl);
+                    System.out.println("After add to Database, Short url for " + longurl + " is " + shortUrl);
                 }
             }
         });
@@ -92,8 +91,6 @@ public class DemoApplication {
             if (lastCharacterInLastShortUrl.equals("z")) {
                 nextShortUrlAvailable = lastShortUrl.substring(0, lastShortUrl.length() - 1) + "00";
             } else if (lastCharacterInLastShortUrl.equals("9")) {
-                // Replace last character of String with a
-                int lastCharacterAsInt = Integer.parseInt(lastCharacterInLastShortUrl) + 1;
                 nextShortUrlAvailable = lastShortUrl.substring(0, lastShortUrl.length() - 1) + "a";
             } else if (isNumeric(lastCharacterInLastShortUrl)) {
                 int lastCharacterAsInt = Integer.parseInt(lastCharacterInLastShortUrl) + 1;
@@ -108,6 +105,28 @@ public class DemoApplication {
             }
         }
         return nextShortUrlAvailable;
+    }
+
+    private static String getShortUrlForLongUrl(String longUrl) {
+        String shortUrl = "";
+        try {
+            String myDriver = "org.gjt.mm.mysql.Driver";
+            String myUrl = "jdbc:mysql://localhost:3306/urls?allowPublicKeyRetrieval=true&useSSL=false";
+            Class.forName(myDriver);
+            Connection conn = DriverManager.getConnection(myUrl, "root", "root");
+
+            String query = "select short_url from url where long_url = '" + longUrl + "';";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            if (resultSet.next()) {
+                shortUrl = resultSet.getString("short_url");
+            } else System.out.println("WARN: Empty result returned in getShortUrlForLongUrl");
+            conn.close();
+        } catch (Exception e) {
+            System.err.println("Got an exception while checking DB!");
+            System.err.println(e.getMessage());
+        }
+        return shortUrl;
     }
 
     public static boolean isNumeric(String strNum) {
